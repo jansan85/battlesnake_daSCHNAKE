@@ -26,6 +26,23 @@ def avoid_my_body(my_head: Dict[str, int], my_body: List[dict], possible_moves: 
       if "right" in possible_moves: possible_moves.remove("right")
   return possible_moves
 
+""" Avoiding biting other snakes by taking out moves on fields another snake is on """
+def avoid_other_snakes(my_head: Dict[str, int], other_snake_body: List[dict], possible_moves: List[str]) -> List[str]:
+  for body_part in other_snake_body:
+    if (body_part["x"] == my_head["x"]) and ((body_part["y"]+1) == my_head["y"]):
+      print("body  - - - Dont go down")
+      if "down" in possible_moves: possible_moves.remove("down")
+    if (body_part["x"] == my_head["x"]) and ((body_part["y"]-1) == my_head["y"]):
+      print("body  - - - Dont go up")
+      if "up" in possible_moves: possible_moves.remove("up")
+    if (body_part["y"] == my_head["y"]) and ((body_part["x"]+1) == my_head["x"]):
+      print("body  - - - Dont go left")
+      if "left" in possible_moves: possible_moves.remove("left")
+    if (body_part["y"] == my_head["y"]) and ((body_part["x"]-1) == my_head["x"]):
+      print("body  - - - Dont go right")
+      if "right" in possible_moves: possible_moves.remove("right")
+  return possible_moves
+
 """ Avoiding biting your neck by taking out a move 'back' """
 def avoid_my_neck(my_head: Dict[str, int], my_body: List[dict], possible_moves: List[str]) -> List[str]:
     my_neck = my_body[1]  # The segment of body right after the head is the 'neck'
@@ -62,7 +79,7 @@ def avoid_edges(my_head: Dict[str, int], board_height:[int], board_width:[int], 
 
 """ Eat food that can be reached directly """
 def direct_move_to_eat(my_head: Dict[str, int], food_coord: [str, int]) -> str: 
-    print(f" priomatch food_coord {food_coord} vs {my_head}")
+    #print(f" priomatch food_coord {food_coord} vs {my_head}")
     if (food_coord["x"] == my_head["x"]) and ((food_coord["y"]-1) == my_head["y"]):
       print ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PRIO - eat up")
       return "up"
@@ -100,7 +117,8 @@ def choose_move(data: dict) -> str:
     board_width = data["board"]["width"] #int board width
     #print (board_width)
     food = data["board"]["food"] #A list of x/y coordinate dictionaries like [ {"x": 0, "y": 0}, {"x": 1, "y": 0}, {"x": 2, "y": 0} ] 
-   
+    #snakes = data["snakes"]
+    
        
     # TODO: uncomment the lines below so you can see what this data looks like in your output!
     # print(f"~~~ Turn: {data['turn']}  Game Mode: {data['game']['ruleset']['name']} ~~~")
@@ -118,6 +136,10 @@ def choose_move(data: dict) -> str:
 
     # Don't bite your own body
     possible_moves = avoid_my_body(my_head, my_body, possible_moves)
+
+    # Don't bite other snakes
+    #other_snake_body = 
+   # possible_moves = avoid_other_snakes(my_head, other_snake_body, possible_moves)
     special_move = "false"
     # check if there is a move directly to food
     for food_coord in food:
